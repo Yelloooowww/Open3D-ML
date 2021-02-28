@@ -1,0 +1,36 @@
+
+(cl:in-package :asdf)
+
+(defsystem "subt_msgs-srv"
+  :depends-on (:roslisp-msg-protocol :roslisp-utils :geometry_msgs-msg
+               :std_msgs-msg
+               :subt_msgs-msg
+)
+  :components ((:file "_package")
+    (:file "PoseFromArtifact" :depends-on ("_package_PoseFromArtifact"))
+    (:file "_package_PoseFromArtifact" :depends-on ("_package"))
+    (:file "artifact" :depends-on ("_package_artifact"))
+    (:file "_package_artifact" :depends-on ("_package"))
+    (:file "frame_switch" :depends-on ("_package_frame_switch"))
+    (:file "_package_frame_switch" :depends-on ("_package"))
+    (:file "int32" :depends-on ("_package_int32"))
+    (:file "_package_int32" :depends-on ("_package"))
+    (:file "int8" :depends-on ("_package_int8"))
+    (:file "_package_int8" :depends-on ("_package"))
+    (:file "node_stat" :depends-on ("_package_node_stat"))
+    (:file "_package_node_stat" :depends-on ("_package"))
+    (:file "pause" :depends-on ("_package_pause"))
+    (:file "_package_pause" :depends-on ("_package"))
+    (:file "pose" :depends-on ("_package_pose"))
+    (:file "_package_pose" :depends-on ("_package"))
+    (:file "report" :depends-on ("_package_report"))
+    (:file "_package_report" :depends-on ("_package"))
+    (:file "start" :depends-on ("_package_start"))
+    (:file "_package_start" :depends-on ("_package"))
+    (:file "status" :depends-on ("_package_status"))
+    (:file "_package_status" :depends-on ("_package"))
+    (:file "stop" :depends-on ("_package_stop"))
+    (:file "_package_stop" :depends-on ("_package"))
+    (:file "ultra_info" :depends-on ("_package_ultra_info"))
+    (:file "_package_ultra_info" :depends-on ("_package"))
+  ))

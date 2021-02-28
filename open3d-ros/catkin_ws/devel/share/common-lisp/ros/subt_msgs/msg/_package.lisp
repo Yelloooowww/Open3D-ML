@@ -1,0 +1,29 @@
+(cl:defpackage subt_msgs-msg
+  (:use )
+  (:export
+   "<ANCHORBALLDETECTION>"
+   "ANCHORBALLDETECTION"
+   "<ARTIFACTPOSE>"
+   "ARTIFACTPOSE"
+   "<ARTIFACTPOSEARRAY>"
+   "ARTIFACTPOSEARRAY"
+   "<BOUNDINGBOX>"
+   "BOUNDINGBOX"
+   "<BOUNDINGBOXES>"
+   "BOUNDINGBOXES"
+   "<GLORAPACK>"
+   "GLORAPACK"
+   "<SUBTINFO>"
+   "SUBTINFO"
+   "<ARTI_INPUT>"
+   "ARTI_INPUT"
+   "<BB_INPUT>"
+   "BB_INPUT"
+   "<MASK_CENTER>"
+   "MASK_CENTER"
+   "<MASKS>"
+   "MASKS"
+   "<UNIFIRSSI>"
+   "UNIFIRSSI"
+  ))
+

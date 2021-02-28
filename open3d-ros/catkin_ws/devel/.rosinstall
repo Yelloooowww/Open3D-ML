@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/yellow/Open3D-ML/open3d-ros/catkin_ws/devel/setup.sh

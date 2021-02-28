@@ -11,11 +11,8 @@ import sys
 
 cfg_file = "/home/yellow/Open3D-ML/ml3d/configs/kpconv_s3dis.yml"
 cfg = _ml3d.utils.Config.load_from_file(cfg_file)
-
 model = ml3d.models.KPFCNN(**cfg.model)
-cfg.dataset['dataset_path'] = "/home/yellow/KPConv-PyTorch/Data/Stanford3dDataset_v1.2/"
-dataset = ml3d.datasets.S3DIS(cfg.dataset.pop('dataset_path', None), **cfg.dataset)
-pipeline = ml3d.pipelines.SemanticSegmentation(model, dataset=dataset, device="gpu", **cfg.pipeline)
+pipeline = ml3d.pipelines.SemanticSegmentation(model, device="gpu")
 
 # download the weights.
 print('# download the weights.')
@@ -31,21 +28,11 @@ if not os.path.exists(ckpt_path):
 print('# load the parameters.')
 pipeline.load_ckpt(ckpt_path=ckpt_path)
 
-# test_split = dataset.get_split("test")
-# data = test_split.get_data(0)
-# run inference on a single example.
-# returns dict with 'predict_labels' and 'predict_scores'.
-# print('# run inference on a single example.')
-# result = pipeline.run_inference(data)
-#
-# # evaluate performance on the test set; this will write logs to './logs'.
-# print('# evaluate performance on the test set; this will write logs to ./logs.')
-# pipeline.run_test()
-# print('Finish')
 print("Load a ply point cloud, print it, and render it")
-# pcd = o3d.io.read_point_cloud("/home/yellow/Open3D-ML/data/demo/fragment.ply")
-pcd = o3d.io.read_point_cloud("/home/yellow/KPConv-PyTorch/Data/Stanford3dDataset_v1.2/input_0.030/Area_5.ply")
-downpcd = pcd.voxel_down_sample(voxel_size=0.05)
+pcd = o3d.io.read_point_cloud("/home/yellow/Open3D-ML/data/demo/fragment.ply")
+# pcd = o3d.io.read_point_cloud("/home/yellow/KPConv-PyTorch/Data/Stanford3dDataset_v1.2/input_0.030/Area_5.ply")
+downpcd = pcd
+# downpcd = pcd.voxel_down_sample(voxel_size=0.05)
 # o3d.visualization.draw_geometries([pcd],
 #                                   zoom=0.3412,
 #                                   front=[0.4257, -0.2125, -0.8795],
@@ -79,5 +66,5 @@ for num,points in enumerate(p_color):
 
 # print(np.asarray(r_pcd.colors))
 o3d.visualization.draw_geometries([r_pcd])
-o3d.io.write_point_cloud("pridict_result.pcd", r_pcd)
+o3d.io.write_point_cloud("pridict_result1.pcd", r_pcd)
 print('write_point_cloud')
