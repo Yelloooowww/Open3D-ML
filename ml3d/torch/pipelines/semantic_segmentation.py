@@ -34,8 +34,8 @@ log = logging.getLogger(__name__)
 class SemanticSegmentation(BasePipeline):
     """
     This class allows you to perform semantic segmentation for both training and inference using the Torch. This pipeline has multiple stages: Pre-processing, loading dataset, testing, and inference or training.
-    
-    **Example:** 
+
+    **Example:**
         This example loads the Semantic Segmentation and performs a training using the SemanticKITTI dataset.
 
             import torch, pickle
@@ -62,7 +62,7 @@ class SemanticSegmentation(BasePipeline):
             device='gpu',
             split='train',
             train_sum_dir='train_log')
-            
+
     **Args:**
             dataset: The 3D ML dataset class. You can use the base dataset, sample datasets , or a custom dataset.
             model: The model to be used for building the pipeline.
@@ -81,11 +81,11 @@ class SemanticSegmentation(BasePipeline):
             device: The device to be used for training.
             split: The dataset split to be used. In this example, we have used "train".
             train_sum_dir: The directory where the trainig summary is stored.
-            
+
     **Returns:**
             class: The corresponding class.
-        
-        
+
+
     """
 
     def __init__(
@@ -130,7 +130,7 @@ class SemanticSegmentation(BasePipeline):
 
     """
     Run the inference using the data passed.
-    
+
     """
 
     def run_inference(self, data):
@@ -177,7 +177,7 @@ class SemanticSegmentation(BasePipeline):
 
     """
     Run the test using the data passed.
-    
+
     """
 
     def run_test(self):
@@ -241,7 +241,7 @@ class SemanticSegmentation(BasePipeline):
 
     """
     Update tests using sampler, inputs, and results.
-    
+
     """
 
     def update_tests(self, sampler, inputs, results):
@@ -285,7 +285,7 @@ class SemanticSegmentation(BasePipeline):
 
     """
     Run the training on the self model.
-    
+
     """
 
     def run_train(self):
@@ -426,7 +426,7 @@ class SemanticSegmentation(BasePipeline):
 
     """
     Get the batcher to be used based on the device and split.
-    
+
     """
 
     def get_batcher(self, device, split='training'):
@@ -443,7 +443,7 @@ class SemanticSegmentation(BasePipeline):
 
     """
     Save logs from the training and send results to TensorBoard.
-    
+
     """
 
     def save_logs(self, writer, epoch):
@@ -506,7 +506,7 @@ class SemanticSegmentation(BasePipeline):
 
     """
     Load a checkpoint. You must pass the checkpoint and indicate if you want to resume.
-    
+
     """
 
     def load_ckpt(self, ckpt_path=None, is_resume=True):
@@ -536,7 +536,7 @@ class SemanticSegmentation(BasePipeline):
 
     """
     Save a checkpoint at the passed epoch.
-    
+
     """
 
     def save_ckpt(self, epoch):
@@ -552,7 +552,7 @@ class SemanticSegmentation(BasePipeline):
 
     """
     Save experiment configuration with Torch summary.
-    
+
     """
 
     def save_config(self, writer):

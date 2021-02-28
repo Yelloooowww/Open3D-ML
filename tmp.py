@@ -1,52 +1,13 @@
-# import open3d.ml as _ml3d
-# import open3d.ml.torch as ml3d # or open3d.ml.tf as ml3d
-# import os
-#
-#
-# framework = "torch" # or tf
-# cfg_file = "ml3d/configs/kpconv_s3dis.yml"
-# cfg = _ml3d.utils.Config.load_from_file(cfg_file)
-#
-# # fetch the classes by the name
-# Pipeline = _ml3d.utils.get_module("pipeline", cfg.pipeline.name, framework)
-# Model = _ml3d.utils.get_module("model", cfg.model.name, framework)
-# Dataset = _ml3d.utils.get_module("dataset", cfg.dataset.name)
-#
-# # use the arguments in the config file to construct the instances
-# cfg.dataset['dataset_path'] = "/home/yellow/KPConv-PyTorch/Data/Stanford3dDataset_v1.2"
-# dataset = Dataset(cfg.dataset.pop('dataset_path', None), **cfg.dataset)
-# model = Model(**cfg.model)
-# pipeline = Pipeline(model, dataset, **cfg.pipeline)
-#
-# # download the weights.
-# ckpt_folder = "./logs/"
-# os.makedirs(ckpt_folder, exist_ok=True)
-# ckpt_path = ckpt_folder + "randlanet_semantickitti_202009090354utc.pth"
-# randlanet_url = "https://storage.googleapis.com/open3d-releases/model-zoo/randlanet_semantickitti_202009090354utc.pth"
-# if not os.path.exists(ckpt_path):
-#     cmd = "wget {} -O {}".format(randlanet_url, ckpt_path)
-#     os.system(cmd)
-#
-# # ckpt_path = "/home/yellow/Open3D-ML/logs/KPFCNN_S3DIS_torch/checkpoint/chkp_0500.tar"
-# # # load the parameters.
-# # pipeline.load_ckpt(ckpt_path=ckpt_path)
-# print('prepare data')
-# test_split = dataset.get_split("test")
-# print('split')
-# data = test_split.get_data(0)
-# print('data ok')
-#
-# # run inference on a single example.
-# # returns dict with 'predict_labels' and 'predict_scores'.
-# result = pipeline.run_inference(data)
-# print('run test')
-# # evaluate performance on the test set; this will write logs to './logs'.
-# pipeline.run_test()
-# print('finish')
-
 import os
 import open3d.ml as _ml3d
 import open3d.ml.torch as ml3d
+
+import open3d as o3d
+import numpy as np
+import matplotlib.pyplot as plt
+import copy
+import os
+import sys
 
 cfg_file = "/home/yellow/Open3D-ML/ml3d/configs/kpconv_s3dis.yml"
 cfg = _ml3d.utils.Config.load_from_file(cfg_file)
@@ -70,15 +31,53 @@ if not os.path.exists(ckpt_path):
 print('# load the parameters.')
 pipeline.load_ckpt(ckpt_path=ckpt_path)
 
-test_split = dataset.get_split("test")
-data = test_split.get_data(0)
-
+# test_split = dataset.get_split("test")
+# data = test_split.get_data(0)
 # run inference on a single example.
 # returns dict with 'predict_labels' and 'predict_scores'.
-print('# run inference on a single example.')
-result = pipeline.run_inference(data)
+# print('# run inference on a single example.')
+# result = pipeline.run_inference(data)
+#
+# # evaluate performance on the test set; this will write logs to './logs'.
+# print('# evaluate performance on the test set; this will write logs to ./logs.')
+# pipeline.run_test()
+# print('Finish')
+print("Load a ply point cloud, print it, and render it")
+# pcd = o3d.io.read_point_cloud("/home/yellow/Open3D-ML/data/demo/fragment.ply")
+pcd = o3d.io.read_point_cloud("/home/yellow/KPConv-PyTorch/Data/Stanford3dDataset_v1.2/input_0.030/Area_5.ply")
+downpcd = pcd.voxel_down_sample(voxel_size=0.05)
+# o3d.visualization.draw_geometries([pcd],
+#                                   zoom=0.3412,
+#                                   front=[0.4257, -0.2125, -0.8795],
+#                                   lookat=[2.6172, 2.0475, 1.532],
+#                                   up=[-0.0694, -0.9768, 0.2024])
+p_color = np.asarray(downpcd.colors)
+p = np.asarray(downpcd.points)
 
-# evaluate performance on the test set; this will write logs to './logs'.
-print('# evaluate performance on the test set; this will write logs to ./logs.')
-pipeline.run_test()
-print('Finish')
+f = np.zeros((len(p),3))
+l = np.zeros(len(p))
+print('print(len(p))=',len(p))
+d = {'point':p , 'feat':f ,'label':l}
+results = pipeline.run_inference(d)
+# print(results)
+# print(results['predict_scores'])
+
+r_array = results['predict_labels']
+rs_array = results['predict_scores']
+r_pcd = downpcd
+
+color_list = [[1,0,0],[0,1,0],[0,0,1],[1,1,0],[1,0,1],[0,1,1],[1,1,1],[0.5,0.5,0],[0.5,0,0.5],[0,0.5,0.5],[0.5,0,0],[0,0.5,0],[0,0,0.5],[0.5,0.5,0.5],[0.25,0.25,0],[0.25,0,0.25],[0,0.25,0.25],[0.25,0.25,0.25],[0.25,0,0],[0,0.25,0]]
+
+for num,points in enumerate(p_color):
+    r_pcd.colors[num] = color_list[ r_array[num] ]
+
+    # if r_array[num] == 12:
+    #     # print('red:',rs_array[num])
+    #     r_pcd.colors[num] = [1,0,0]
+    # else :
+    #     r_pcd.colors[num] = [0,0,0]
+
+# print(np.asarray(r_pcd.colors))
+o3d.visualization.draw_geometries([r_pcd])
+o3d.io.write_point_cloud("pridict_result.pcd", r_pcd)
+print('write_point_cloud')

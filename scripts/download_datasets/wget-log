@@ -1,0 +1,7 @@
+WARNING: timestamping does nothing in combination with -O. See the manual
+for details.
+
+--2021-02-24 19:45:17--  https://s3.eu-central-1.amazonaws.com/avg-kitti/data_object_label_2.zip
+Resolving s3.eu-central-1.amazonaws.com (s3.eu-central-1.amazonaws.com)... 52.219.168.56
+Connecting to s3.eu-central-1.amazonaws.com (s3.eu-central-1.amazonaws.com)|52.219.168.56|:443... connected.
+Unable to establish SSL connection.
