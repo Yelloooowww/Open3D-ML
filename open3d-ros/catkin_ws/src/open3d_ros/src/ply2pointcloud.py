@@ -22,14 +22,14 @@ from matplotlib.cm import get_cmap
 
 class ply2pointcloud(object):
 	def __init__(self):
-		file_path = '/home/yellow/KPConv-PyTorch/Data/Stanford3dDataset_v1.2/input_0.020/Area_1.ply'
+		file_path = '/home/yellow/KPConv-PyTorch/Data/Stanford3dDataset_v1.2/input_0.020/Area_3.ply'
 		print("Load a ply point cloud, print it, and render it")
 		pcd = o3d.io.read_point_cloud(file_path)
 		self.xyz_load = np.asarray(pcd.points)
 		self.pub_msg = self.xyzrgb_array_to_pointcloud2( self.xyz_load, self.xyz_load)
 
 		self.timer = rospy.Timer(rospy.Duration(0.5), self.timer_callback)
-		self.pub_points = rospy.Publisher('predict_points', PointCloud2, queue_size=1)
+		self.pub_points = rospy.Publisher('input_points', PointCloud2, queue_size=1)
 		print("ply2pointcloud init done")
 
 	def xyzrgb_array_to_pointcloud2(self,points, colors, stamp=None, frame_id='base_link', seq=None):

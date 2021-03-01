@@ -86,7 +86,7 @@ class KPFCNN_d435(object):
 		self.pipeline.load_ckpt(ckpt_path=ckpt_path)
 
 		# ROS Subscriber
-		self.sub_points = rospy.Subscriber("/camera/depth/color/points", PointCloud2, self.cb_points, queue_size=1)
+		self.sub_points = rospy.Subscriber("input_points", PointCloud2, self.cb_points, queue_size=1)
 		self.pub_points = rospy.Publisher('predict_points', PointCloud2, queue_size=1)
 		print("KPFCNN_d435 init done")
 
@@ -99,14 +99,14 @@ class KPFCNN_d435(object):
 		cloud_points = []
 		for p in point_cloud2.read_points(msg, field_names = ("x", "y", "z"), skip_nans=True):
 			cloud_points.append(p)
-		raw_point = np.array(cloud_points)
+		# raw_point = np.array(cloud_points)
 
 		# downsample
-		# pcd = o3d.geometry.PointCloud()
-		# pcd.points = o3d.utility.Vector3dVector(np.array(cloud_points))
-		# downpcd = pcd.voxel_down_sample(voxel_size=0.05)
-		# raw_point = np.asarray(downpcd.points)
-		
+		pcd = o3d.geometry.PointCloud()
+		pcd.points = o3d.utility.Vector3dVector(np.array(cloud_points))
+		downpcd = pcd.voxel_down_sample(voxel_size=0.05)
+		raw_point = np.asarray(downpcd.points)
+
 		print(len(raw_point))
 
 		# prepare input data
@@ -122,15 +122,26 @@ class KPFCNN_d435(object):
 		rs_array = results['predict_scores']
 		goal_points_color_list = raw_point.copy()
 
-		goal_class = 11
-		for num,points in enumerate(goal_points_color_list):
-			# if not (r_array[num] == goal_class and rs_array[num][goal_class]>0.7):
-			if not (r_array[num] == goal_class):
-				goal_points_color_list[num] = [0,0,0]
-			else :
-				goal_points_color_list[num] = [1,0,0]
 
-		pub_msg = xyzrgb_array_to_pointcloud2( raw_point, goal_points_color_list,frame_id='camera_color_optical_frame' )
+		color_list =   [[255, 165, 0  ],   #0: 'ceiling',Orange
+		                [255, 255, 0  ],   #1: 'floor',Yellow
+		                [0  , 128, 0  ],   #2: 'wall',Green
+		                [0  , 255, 0  ],   #3: 'beam',Lime
+		                [0  , 0  , 255],   #4: 'column',Blue
+		                [0  , 255, 255],   #5: 'window',Cyan
+		                [128, 0  , 128],   #6: 'door',Purple
+		                [255, 192, 203],   #7: 'table',Pink
+		                [255, 0  , 0  ],   #8: 'chair',Red
+		                [255, 255, 224],   #9: 'sofa',LightYellow
+		                [0  , 191, 255],   #10: 'bookcase',DeepSkyBlue
+		                [139,  69, 19 ],   #11: 'board',SaddleBrown
+		                [0  ,   0, 0    ]] #12: 'clutter',Black
+
+		for num,points in enumerate(goal_points_color_list):
+			color_code = np.array(color_list[ r_array[num] ],dtype=np.float32)
+			goal_points_color_list[num] = color_code/255.0
+
+		pub_msg = xyzrgb_array_to_pointcloud2( raw_point, goal_points_color_list,frame_id='base_link' )
 		self.pub_points.publish(pub_msg)
 
 
