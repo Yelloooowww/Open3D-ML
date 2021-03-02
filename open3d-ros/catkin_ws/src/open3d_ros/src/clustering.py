@@ -27,7 +27,7 @@ class Clustering(object):
 	def __init__(self):
 
 		self.pub_markers = rospy.Publisher('visualization_marker_array', MarkerArray, queue_size=100)
-		self.sub_points = rospy.Subscriber("input_points", PointCloud2, self.cb_points, queue_size=1)
+		self.sub_points = rospy.Subscriber("/camera/depth/color/points", PointCloud2, self.cb_points, queue_size=1)
 		self.pub_points = rospy.Publisher('clustering_points', PointCloud2, queue_size=1)
 
 		print("clustering init done")
@@ -58,7 +58,7 @@ class Clustering(object):
 		colors[labels < 0] = 0
 		pcd.colors = o3d.utility.Vector3dVector(colors[:, :3])
 
-		pub_msg = self.xyzrgb_array_to_pointcloud2( np.array(pcd.points), np.array(pcd.colors),frame_id='base_link' )
+		pub_msg = self.xyzrgb_array_to_pointcloud2( np.array(pcd.points), np.array(pcd.colors),frame_id='camera_color_optical_frame' )
 		self.pub_points.publish(pub_msg)
 
 		if max_label + 1 > 0:
@@ -68,9 +68,10 @@ class Clustering(object):
 				(group[labels[num]]).append( np.asarray(point) )
 
 			for group_index in range(max_label + 1):
-				xyz = np.mean(np.array(group[group_index]), axis=0)
-				print('center',group_index+1,'at : ',xyz[0],xyz[1],xyz[2])
-				self.markerArray.markers.append( self.xyz_to_marker(xyz[0],xyz[1],xyz[2],id=group_index,frame_id='base_link') )
+				if len(group[group_index])>10000:
+					xyz = np.mean(np.array(group[group_index]), axis=0)
+					print('center',group_index+1,'at : ',xyz[0],xyz[1],xyz[2])
+					self.markerArray.markers.append( self.xyz_to_marker(xyz[0],xyz[1],xyz[2],id=group_index,frame_id='camera_color_optical_frame') )
 
 			self.pub_markers.publish(self.markerArray)
 			# print(self.markerArray)
