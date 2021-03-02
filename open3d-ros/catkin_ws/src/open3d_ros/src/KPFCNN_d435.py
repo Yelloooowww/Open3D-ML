@@ -99,13 +99,13 @@ class KPFCNN_d435(object):
 		cloud_points = []
 		for p in point_cloud2.read_points(msg, field_names = ("x", "y", "z"), skip_nans=True):
 			cloud_points.append(p)
-		# raw_point = np.array(cloud_points)
+		raw_point = np.array(cloud_points)
 
-		# downsample
-		pcd = o3d.geometry.PointCloud()
-		pcd.points = o3d.utility.Vector3dVector(np.array(cloud_points))
-		downpcd = pcd.voxel_down_sample(voxel_size=0.05)
-		raw_point = np.asarray(downpcd.points)
+		# # downsample
+		# pcd = o3d.geometry.PointCloud()
+		# pcd.points = o3d.utility.Vector3dVector(np.array(cloud_points))
+		# downpcd = pcd.voxel_down_sample(voxel_size=0.05)
+		# raw_point = np.asarray(downpcd.points)
 
 		print(len(raw_point))
 

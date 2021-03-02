@@ -22,7 +22,8 @@ from matplotlib.cm import get_cmap
 
 class ply2pointcloud(object):
 	def __init__(self):
-		file_path = '/home/yellow/KPConv-PyTorch/Data/Stanford3dDataset_v1.2/input_0.020/Area_3.ply'
+		# file_path = '/home/yellow/KPConv-PyTorch/Data/Stanford3dDataset_v1.2/input_0.020/Area_3.ply'
+		file_path = '/home/yellow/Open3D/examples/test_data/Bunny.ply'
 		print("Load a ply point cloud, print it, and render it")
 		pcd = o3d.io.read_point_cloud(file_path)
 		self.xyz_load = np.asarray(pcd.points)
