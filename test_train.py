@@ -14,15 +14,25 @@ import numpy.lib.recfunctions as nlr
 from matplotlib.cm import get_cmap
 
 
-print( 'use a cache for storing the results of the preprocessing (default path is ./logs/cache)' )
-dataset = ml3d.datasets.S3DIS(dataset_path='/home/yellow/KPConv-PyTorch/Data/Stanford3dDataset_v1.2', use_cache=True)
+# print( 'use a cache for storing the results of the preprocessing (default path is ./logs/cache)' )
+# dataset = ml3d.datasets.S3DIS(dataset_path='/home/yellow/dataset/Stanford3dDataset_v1.2', use_cache=True)
+#
+# print( 'create the model with random initialization.')
+# model = ml3d.models.KPFCNN()
+#
+# print('pipeline = ml3d.pipelines.SemanticSegmentation(model=model, dataset=dataset, max_epoch=100)')
+# pipeline = ml3d.pipelines.SemanticSegmentation(model=model, dataset=dataset, max_epoch=100)
+#
+# print('prints training progress in the console.')
+# pipeline.run_train()
+# print('Done')
+# use a cache for storing the results of the preprocessing (default path is './logs/cache')
+dataset = ml3d.datasets.SemanticKITTI(dataset_path='/path/to/SemanticKITTI/', use_cache=True)
 
-print( 'create the model with random initialization.')
-model = ml3d.models.KPFCNN()
+# create the model with random initialization.
+model = RandLANet()
 
-print('pipeline = ml3d.pipelines.SemanticSegmentation(model=model, dataset=dataset, max_epoch=100)')
-pipeline = ml3d.pipelines.SemanticSegmentation(model=model, dataset=dataset, max_epoch=100)
+pipeline = SemanticSegmentation(model=model, dataset=dataset, max_epoch=100)
 
-print('prints training progress in the console.')
+# prints training progress in the console.
 pipeline.run_train()
-print('Done')
